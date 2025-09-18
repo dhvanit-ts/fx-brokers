@@ -1,0 +1,254 @@
+{
+  "name": "AvaTrade",
+  "website": "https://www.wikifx.com/en/dealer/8261153765.html",
+  "image": "https://eimgjys.fxeyee.com/logo/638524966565554499/FXT638524966565554499_113163.png_wiki-template-global",
+  "tag": "Regulated",
+  "score": "9.50",
+  "labels": [
+    "ECN",
+    "Oil",
+    "Regulated in Australia"
+  ],
+  "country": {
+    "years": "15-20 years"
+  },
+  "markets": [],
+  "license": "Regulatory License Number：406684",
+  "broker": null,
+  "basicInfo": {
+    "registeredRegion": "Registered Region",
+    "operatingPeriod": "Operating Period",
+    "companyName": "Company Name",
+    "contactNumber": "Contact Number",
+    "website": "Company Website",
+    "facebook": "Facebook"
+  },
+  "spreads": [
+    {
+      "tradingPair": "USDCAD",
+      "buy": "1.38176",
+      "account": "Standard",
+      "spread": "1.7",
+      "avgSpreadDay": "1.70",
+      "longSwap": "0.39",
+      "shortSwap": "-2.53"
+    }
+  ],
+  "mtInfo": {
+    "licenses": ["Full License MT4", "Full License MT5"],
+    "mt4Servers": "7",
+    "mt5Servers": "4",
+    "avgExecutionSpeed": "173.89",
+    "platforms": [
+      {
+        "logo": "https://eimgjys.fxeyee.com/logo/638023059684569444/FXT638023059684569444_824044.png_wiki-template-global",
+        "name": "Meta Trader 4",
+        "rating": "Perfect"
+      }
+    ]
+  },
+  "mtInfoCards": [
+    {
+      "platform": "MT4",
+      "serverName": "Ava-Real 5",
+      "country": "--",
+      "leverageList": "200 | 100 | 66 | 50 | 33 | 25 | 20 | 10 | 5 | 1",
+      "leverageTable": [],
+      "serverIp": "Ava Trade Ltd",
+      "ping": "32 ms",
+      "company": "Ava Trade Ltd"
+    }
+  ],
+  "licenses": [
+    {
+      "flag": "https://img.souhei.com.cn/flag-c/045fe4098d24356d.png_wiki-template-global",
+      "regulator": "ASIC",
+      "status": "Regulated",
+      "country": "Australia",
+      "licenseType": "Market Maker (MM)"
+    }
+  ],
+  "environment": {
+    "tabs": [
+      "Transaction Speed C",
+      "Transaction Cost AA",
+      "Rollover Cost AAA",
+      "Trading slippage AAA",
+      "Software disconnected C"
+    ],
+    "speed": [
+      {
+        "label": "Average transaction speed(ms)",
+        "value": "717.8",
+        "rating": "Poor"
+      }
+    ],
+    "cost": [
+      {
+        "value": "13.66USD/Lot",
+        "rating": "Good"
+      }
+    ],
+    "overnight": [
+      {
+        "value": "Long: -2.73USD/Lot",
+        "rating": "Great"
+      }
+    ],
+    "slippage": [
+      {
+        "label": "Average slippage",
+        "value": "-0.2",
+        "rating": "Great"
+      }
+    ],
+    "offline": [
+      {
+        "label": "Average disconnection frequency (times/day)",
+        "value": "0.2",
+        "rating": "Good"
+      }
+    ],
+    "summary": {
+      "ranking": "12 / 125",
+      "testUsers": "1,189",
+      "orders": "3,111",
+      "margin": "$4,077,649 USD"
+    },
+    "dataSource": "WikiFX Data provide",
+    "updatedAt": "2025-09-04 22:30:00"
+  },
+  "transactionData": {
+    "tabs": ["WikiFX Data", "Transaction Activity", "Funding Data"],
+    "tabsContent": [
+      {
+        "title": "WikiFX Data",
+        "left": [
+          {
+            "title": "Total Margin Trend",
+            "content": {
+              "chartId": "bzjzsbar"
+            }
+          }
+        ],
+        "right": {
+          "Stop Out": "0.70%",
+          "distributions": ["Stop Out Symbol Distribution", "6 months"]
+        }
+      },
+      {
+        "title": "Transaction Activity",
+        "left": [
+          {
+            "title": "Active Trade",
+            "content": null
+          },
+          {
+            "title": "Transaction Lots",
+            "content": null
+          }
+        ],
+        "right": {
+          "Spread Cost": [
+            "Spread Cost",
+            "AvaTrade",
+            "--",
+            "Industry average",
+            ""
+          ],
+          "Total Profit": [
+            "Total Profit",
+            "AvaTrade",
+            "--",
+            "Industry average",
+            ""
+          ]
+        }
+      },
+      {
+        "title": "Funding Data",
+        "left": [
+          {
+            "title": "Net Deposit",
+            "content": null
+          }
+        ],
+        "right": {
+          "Number of new users": "--",
+          "distributions": ["The proportion of funding", "6 months"]
+        }
+      }
+    ]
+  },
+  "marketing": {
+    "tabs": ["Marketing Strategy", "Delivery Index", "Social Source"],
+    "blocks": [
+      {
+        "title": "Sources",
+        "items": [
+          {
+            "name": "Google",
+            "value": "93.05%"
+          }
+        ]
+      },
+      {
+        "title": "Language",
+        "items": [
+          {
+            "name": "English",
+            "value": "43.27%"
+          }
+        ]
+      },
+      {
+        "title": "Mkt. Analysis"
+      },
+      {
+        "title": "Creatives",
+        "items": [
+          {
+            "name": "Branding",
+            "value": "91.28%"
+          }
+        ]
+      }
+    ],
+    "dataSource": "WikiResearch"
+  },
+  "bizArea": [
+    {
+      "country": "Italy",
+      "code": "IT",
+      "value": 6.55,
+      "flag": "https://img.souhei.com.cn/flag/cb6de321930cf345/IT.png_wiki-template-global"
+    }
+  ],
+  "clones": [
+    {
+      "name": "WARWICK  CAPITAL",
+      "link": "https://www.wikifx.com/en/dealer/6351883180.html",
+      "logo": "https://eimgjys.fxeyee.com/logo/6351883180/FXT6351883180_545227.png_wiki-template-global",
+      "score": 1.59,
+      "tags": [
+        "5-10 years",
+        "Suspicious Regulatory License",
+        "Suspicious Scope of Business",
+        "Clone Firm Australia",
+        "High potential risk"
+      ]
+    }
+  ],
+  "companies": [
+    {
+      "companyName": "",
+      "status": "",
+      "country": "",
+      "registrationNo": "VIP is not activated.",
+      "established": "VIP is not activated.",
+      "relatedSources": "",
+      "logoUrl": "https://resource1.interface003.com/web20/img/vip.8927dc8.svg",
+      "countryFlagUrl": ""
+    }
+  ]
+}
