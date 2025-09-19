@@ -14,10 +14,8 @@ export const createAdmin = async (req: Request, res: Response) => {
     if (!password || !username)
       throw new ApiError(400, "All fields are required");
 
-    const encryptedPass = await bcrypt.hash(password, 12);
-
     const admin = {
-      password: encryptedPass,
+      password: password.trim(),
       username,
     };
 
@@ -82,7 +80,8 @@ export const loginAdmin = async (req: Request, res: Response) => {
         "NO_PASSWORD_FOUND_ERROR"
       );
 
-    if (!(await bcrypt.compare(password, existingUser.dataValues.password)))
+      console.log(password, existingUser.dataValues.password);
+    if (!(await bcrypt.compare(password.trim(), existingUser.dataValues.password)))
       throw new ApiError(400, "Invalid password");
 
     const { accessToken } = await userService.generateAccessAndRefreshToken(

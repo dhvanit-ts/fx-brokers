@@ -7,8 +7,8 @@ const Market = sequelize.define("markets", {
     autoIncrement: true,
     primaryKey: true,
   },
-  broker: {
-    type: DataTypes.NUMBER,
+  broker_id: {
+    type: DataTypes.INTEGER,
   },
   name: {
     type: DataTypes.STRING,

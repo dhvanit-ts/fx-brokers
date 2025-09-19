@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Broker } from "@/types/brokers";
 import { useParams } from "next/navigation";
-import brokersData from "@/data/brokers.json";
 import {
   FiGlobe,
   FiPhone,
@@ -13,9 +12,13 @@ import {
   FiTrendingUp,
   FiLayers,
   FiServer,
+  FiInfo,
+  FiActivity,
 } from "react-icons/fi";
-import { FaFacebook } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
 import Image from "next/image";
+import fallbackImage from "@/constants/fallbackImage";
+import fetcher from "@/utils/fetcher";
 
 // Collapsible Section Component
 const Section: React.FC<{
@@ -24,14 +27,13 @@ const Section: React.FC<{
   children: React.ReactNode;
 }> = ({ title, icon, children }) => {
   const [open, setOpen] = useState(true);
+
   return (
     <div className="bg-white shadow-md rounded-xl overflow-hidden border border-gray-100">
       {/* Section Header */}
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-3 px-5 py-4 text-lg font-semibold 
-                   bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 
-                   transition-all"
+        className="w-full flex items-center gap-3 px-5 py-4 text-lg font-semibold bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 transition-all"
       >
         <span className="text-blue-600 text-xl">{icon}</span>
         <span>{title}</span>
@@ -53,9 +55,25 @@ const Section: React.FC<{
 };
 
 const BrokerPage = () => {
+  const [broker, setBroker] = useState<Broker | null>(null);
   const { brokerId } = useParams<{ brokerId: string }>();
-  const broker: Broker | null = (brokersData.find((b) => b.name === brokerId) ??
-    null) as Broker | null;
+
+  useEffect(() => {
+    (async () => {
+      if (!brokerId) return;
+
+      try {
+        const data = await fetcher.get<{ data: Broker }>({
+          endpointPath: "/brokers/get/one/1",
+          statusShouldBe: 200,
+          onError: () => {},
+        });
+        if (data) setBroker(data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, [brokerId]);
 
   if (!broker) {
     return (
@@ -68,8 +86,8 @@ const BrokerPage = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row items-center gap-6 bg-white shadow-lg rounded-xl p-6 border border-gray-100">
         <Image
-          src={broker.image}
-          alt={broker.name}
+          src={broker.image || fallbackImage}
+          alt={broker.name || "Logo"}
           width={96}
           height={96}
           className="w-24 h-24 rounded-xl border shadow-sm object-contain bg-gray-50"
@@ -89,14 +107,13 @@ const BrokerPage = () => {
             <span className="font-semibold text-lg text-yellow-600">
               {broker.score}
             </span>{" "}
-            · {broker.country.years} experience
+            · {broker.years} experience
           </p>
           <div className="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
-            {broker.labels.map((label, idx) => (
+            {broker.labels?.map((label, idx) => (
               <span
                 key={idx}
-                className="bg-blue-100 text-blue-700 
-                           text-xs px-3 py-1 rounded-full shadow-sm font-medium"
+                className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full shadow-sm font-medium"
               >
                 {label}
               </span>
@@ -106,30 +123,22 @@ const BrokerPage = () => {
       </div>
 
       {/* Basic Info */}
-      {broker.basicInfo && (
+      {broker && (
         <Section title="Basic Info" icon={<FiBookOpen />}>
           <div className="grid md:grid-cols-2 gap-4 text-gray-700">
             <p>
-              <strong>Company:</strong> {broker.basicInfo.companyName}
+              <strong>Company:</strong> {broker.name}
             </p>
             <p>
-              <strong>Region:</strong> {broker.basicInfo.registeredRegion}
-            </p>
-            <p>
-              <strong>Operating Period:</strong>{" "}
-              {broker.basicInfo.operatingPeriod}
+              <strong>Region:</strong> {broker.country}
             </p>
             <p>
               <FiPhone className="inline mr-1 text-gray-500" />{" "}
-              {broker.basicInfo.contactNumber || "N/A"}
+              {broker.contact?.[0] || "N/A"}
             </p>
             <p>
               <FiGlobe className="inline mr-1 text-gray-500" />{" "}
-              {broker.basicInfo.companyWebsite || "N/A"}
-            </p>
-            <p>
-              <FaFacebook className="inline mr-1 text-blue-600" />{" "}
-              {broker.basicInfo.Facebook || "N/A"}
+              {broker.website || "N/A"}
             </p>
           </div>
         </Section>
@@ -147,8 +156,8 @@ const BrokerPage = () => {
                 <Image
                   height={32}
                   width={32}
-                  src={l.flag}
-                  alt={l.country}
+                  src={l.flag || fallbackImage}
+                  alt={l.country || "Flag"}
                   className="w-8 h-8 rounded-full border"
                 />
                 <div>
@@ -188,65 +197,115 @@ const BrokerPage = () => {
         </Section>
       )}
 
-      {/* MT Info */}
-      {broker.mtInfo && (
-        <Section title="MT Info" icon={<FiGlobe />}>
-          <div className="space-y-4">
-            <div className="flex flex-wrap gap-3 text-sm">
-              <span className="px-3 py-1 bg-gray-100 rounded">
-                MT4 Servers: {broker.mtInfo.mt4Servers || "N/A"}
-              </span>
-              <span className="px-3 py-1 bg-gray-100 rounded">
-                MT5 Servers: {broker.mtInfo.mt5Servers || "N/A"}
-              </span>
-              <span className="px-3 py-1 bg-gray-100 rounded">
-                Avg Execution Speed: {broker.mtInfo.avgExecutionSpeed || "N/A"}{" "}
-                ms
-              </span>
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {broker.mtInfo.platforms.map((p, idx) => (
-                <div
-                  key={idx}
-                  className="p-4 border rounded-lg shadow bg-white flex items-center gap-3"
+      {broker.about && (
+        <Section title="About" icon={<FiInfo />}>
+          <div className="grid md:grid-cols-2 gap-6">
+            {broker.about.brokerInformation?.map((info, idx) => (
+              <p key={idx} className="text-gray-700">
+                {info}
+              </p>
+            ))}
+
+            {/* Social Media Links */}
+            <div className="flex gap-4 mt-4">
+              {broker.about.instagram && (
+                <a
+                  href={broker.about.instagram[0]}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-gray-600 hover:text-blue-600"
                 >
-                  {p.logo && (
-                    <Image
-                      width={32}
-                      height={32}
-                      src={p.logo}
-                      alt={p.name || "Platform"}
-                      className="w-8 h-8"
-                    />
-                  )}
-                  <div>
-                    <p className="font-semibold">{p.name}</p>
-                    <p className="text-sm text-gray-500">
-                      Rating: {p.rating || "N/A"}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                  <FaInstagram size={24} />
+                </a>
+              )}
+              {broker.about.linkedin && (
+                <a
+                  href={broker.about.linkedin[0]}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-gray-600 hover:text-blue-600"
+                >
+                  <FaLinkedin size={24} />
+                </a>
+              )}
+              {/* Add other social media icons */}
             </div>
           </div>
         </Section>
       )}
 
+      {broker.environmentDetails && (
+        <Section title="Environment Details" icon={<FiActivity />}>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-4 bg-white rounded-lg shadow">
+              <h3 className="font-semibold mb-2">Performance Grade</h3>
+              <p className="text-2xl font-bold text-blue-600">
+                {broker.environmentDetails.grade}
+              </p>
+              <p className="text-sm text-gray-500">
+                Avg Speed: {broker.environmentDetails.avgTransactionSpeed}
+              </p>
+            </div>
+            <div className="p-4 bg-white rounded-lg shadow">
+              <h3 className="font-semibold mb-2">Platform Details</h3>
+              <p>MT4 License: {broker.environmentDetails.mt4License}</p>
+              <p>Server: {broker.environmentDetails.mt4Server}</p>
+            </div>
+          </div>
+        </Section>
+      )}
+
+      {/* MT Info */}
+      {broker.mtServers && (
+        <div className="space-y-4">
+          <div className="flex flex-wrap gap-3 text-sm">
+            <span className="px-3 py-1 bg-gray-100 rounded">
+              MT4 Servers:{" "}
+              {broker.mtServers.servers.map((s) => s.platform === "MT4")
+                .length || "N/A"}
+            </span>
+            <span className="px-3 py-1 bg-gray-100 rounded">
+              MT5 Servers:{" "}
+              {broker.mtServers.servers.map((s) => s.platform === "MT5")
+                .length || "N/A"}
+            </span>
+            <span className="px-3 py-1 bg-gray-100 rounded">
+              Avg Execution Speed: {broker.mtServers.executionSpeed || "N/A"} ms
+            </span>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {broker.mtServers.servers.map((s, idx) => (
+              <div
+                key={idx}
+                className="p-4 border rounded-lg shadow bg-white flex items-center gap-3"
+              >
+                <div>
+                  <p className="font-semibold">{s.brokerName}</p>
+                  <p className="text-sm text-gray-500">
+                    Platform: {s.platform || "N/A"}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* MT Info Cards */}
-      {broker.mtInfoCards && (
+      {broker.mtServers && (
         <Section title="MT Servers" icon={<FiServer />}>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {broker.mtInfoCards.map((card, idx) => (
+            {broker.mtServers.servers.map((card, idx) => (
               <div
                 key={idx}
                 className="p-4 bg-white rounded-lg shadow border hover:shadow-md transition"
               >
                 <p className="font-semibold">{card.platform}</p>
-                <p className="text-sm text-gray-500">{card.serverName}</p>
+                <p className="text-sm text-gray-500">{card.brokerName}</p>
                 <p className="text-sm">Country: {card.country}</p>
                 <p className="text-sm">Ping: {card.ping}</p>
-                <p className="text-sm">Leverage: {card.leverageList}</p>
-                <p className="text-sm">Company: {card.company}</p>
+                <p className="text-sm">Leverage: {card.leverage}</p>
+                <p className="text-sm">Company: {card.platform}</p>
               </div>
             ))}
           </div>
@@ -341,23 +400,25 @@ const BrokerPage = () => {
       {broker.bizArea && (
         <Section title="Business Areas" icon={<FiGlobe />}>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {broker.bizArea.map((area, idx) => (
-              <div
-                key={idx}
-                className="p-4 bg-white rounded-lg shadow flex items-center gap-3"
-              >
-                <Image
-                  width={24}
-                  height={24}
-                  src={area.flag}
-                  alt={area.country}
-                  className="w-6 h-6 rounded-full"
-                />
-                <span>
-                  {area.country} - <strong>{area.value}%</strong>
-                </span>
-              </div>
-            ))}
+            {broker.bizArea.map((area, idx) =>
+              area.ranking.map((r, idx) => (
+                <div
+                  key={idx}
+                  className="p-4 bg-white rounded-lg shadow flex items-center gap-3"
+                >
+                  <Image
+                    width={24}
+                    height={24}
+                    src={r.flag || fallbackImage}
+                    alt={r.country || "Rankings"}
+                    className="w-6 h-6 rounded-full"
+                  />
+                  <span>
+                    {r.country} - <strong>{r.value}%</strong>
+                  </span>
+                </div>
+              ))
+            )}
           </div>
         </Section>
       )}
@@ -374,8 +435,8 @@ const BrokerPage = () => {
                 <Image
                   height={64}
                   width={64}
-                  src={clone.logo}
-                  alt={clone.name}
+                  src={clone.logo || fallbackImage}
+                  alt={clone.name || "Clones"}
                   className="h-16 mb-2"
                 />
                 <div>

@@ -7,6 +7,8 @@ import License from "../models/license.model";
 import Market from "../models/marketer.model";
 import MT from "../models/mtServer.model";
 import Spreads from "../models/spread.model";
+import brokers from "../data/brokers.json";
+import { bulkInsertBrokers as bulkInsertBrokersHandler } from "../services/broker.service";
 import { ApiError, ApiResponse, AsyncHandler } from "../utils/ApiHelpers";
 
 export const getBrokers = AsyncHandler(async (req: Request, res: Response) => {
@@ -18,44 +20,55 @@ export const getBrokers = AsyncHandler(async (req: Request, res: Response) => {
   }
 });
 
+export const getBrokerById = AsyncHandler(
+  async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+
+      if (!id) throw new ApiError(400, "broker Id is required");
+
+      const broker = await BrokerModel.findByPk(Number(id), {
+        include: [
+          { model: MT },
+          { model: Environment },
+          { model: BizArea },
+          { model: CloneFirm },
+          { model: License },
+          { model: Market },
+          { model: Spreads },
+        ],
+      });
+
+      return res
+        .status(200)
+        .json(
+          new ApiResponse(
+            200,
+            broker?.dataValues,
+            "Broker fetched successfully"
+          )
+        );
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        message: "Error fetching the broker",
+      });
+    }
+  }
+);
+
 export const bulkInsertBrokers = AsyncHandler(
   async (req: Request, res: Response) => {
     try {
-      const { brokers } = req.body;
+      const brokerResults = await bulkInsertBrokersHandler(brokers as any[]);
 
-      if (!brokers || !Array.isArray(brokers) || brokers.length === 0) {
-        return new ApiError(400, "Invalid brokers data");
-      }
-
-      const results: any[] = [];
-      
-      for (const brokerObj of brokers) {
-
-        const {
-          brokers,
-          bizArea,
-          environment,
-          mt,
-          cloneFirms,
-          licenses,
-          markets,
-          spreads,
-        } = brokerObj;
-
-        if (mt) await MT.create(mt);
-        if (environment) await Environment.create(environment);
-        if (bizArea) await BizArea.bulkCreate(bizArea);
-        if (cloneFirms) await CloneFirm.bulkCreate(cloneFirms);
-        if (licenses) await License.bulkCreate(licenses);
-        if (markets) await Market.bulkCreate(markets);
-        if (spreads) await Spreads.bulkCreate(spreads);
-
-        const result = await BrokerModel.bulkCreate(brokers);
-        results.push(result);
-      }
-
-      return new ApiResponse(201, results, "Brokers inserted successfully");
+      return new ApiResponse(
+        201,
+        brokerResults,
+        "Brokers inserted successfully"
+      );
     } catch (error) {
+      console.error(error);
       return new ApiResponse(500, null, "Error inserting brokers");
     }
   }

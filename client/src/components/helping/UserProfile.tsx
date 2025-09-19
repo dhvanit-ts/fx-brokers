@@ -1,7 +1,8 @@
 "use client";
 
 import UserProfileStore from "@/store/userStore";
-import axios from "axios";
+import { User } from "@/types/users";
+import fetcher from "@/utils/fetcher";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -13,18 +14,14 @@ function UserProfile() {
   useEffect(() => {
     (async () => {
       try {
-        const user = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/admin/me`,
-          {
-            withCredentials: true,
-          }
-        );
-
-        if (user.status !== 200) {
-          router.push("/auth/login");
-        }
-
-        setUser(user.data.data);
+        const data = await fetcher.get<{ data: User }>({
+          endpointPath: "/users/me",
+          statusShouldBe: 200,
+          onError: () => {
+            router.push("/auth/login");
+          },
+        });
+        if (data) setUser(data.data);
       } catch (error) {
         console.error("Error fetching user:", error);
         router.push("/auth/login");
@@ -44,7 +41,7 @@ function UserProfile() {
   return (
     <AvatarWrapper>
       <div className="bg-zinc-300 border hover:border-zinc-800 cursor-pointer transition-all h-10 w-10 rounded-full flex items-center justify-center">
-        {user?.username.slice(0, 2).toUpperCase()}
+        {user?.username?.slice(0, 2).toUpperCase()}
       </div>
     </AvatarWrapper>
   );

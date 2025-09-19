@@ -7,8 +7,8 @@ const License = sequelize.define("licenses", {
     autoIncrement: true,
     primaryKey: true,
   },
-  broker: {
-    type: DataTypes.NUMBER,
+  broker_id: {
+    type: DataTypes.INTEGER,
   },
   flag: { type: DataTypes.STRING },
   regulator: { type: DataTypes.STRING },

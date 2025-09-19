@@ -66,7 +66,7 @@ const Broker = sequelize.define("brokers", {
       schema: createJsonValidator(S.array().of(S.string()).build()),
     },
   },
-  licenses: {
+  brokerLicenses: {
     type: DataTypes.JSON,
     allowNull: false,
     validate: {

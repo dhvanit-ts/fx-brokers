@@ -7,8 +7,8 @@ const Spreads = sequelize.define("spreads", {
     autoIncrement: true,
     primaryKey: true,
   },
-  broker: {
-    type: DataTypes.NUMBER,
+  broker_id: {
+    type: DataTypes.INTEGER,
   },
   tradingPair: { type: DataTypes.STRING },
   buy: { type: DataTypes.STRING },

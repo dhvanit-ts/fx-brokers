@@ -1,17 +1,23 @@
 // Top-level interface for the provided JSON
 export interface Broker {
-  id: string;
-  name: string;
-  image: string;
-  tag: string;
-  score: string; // "9.50" in sample; keep string to match source, or change to number if you normalize
-  license: string;
+  id: number;
+  name?: string;
+  image?: string;
+  tag?: string;
+  score?: string;
+  license?: string;
+  country?: string;
+  years?: string;
+  environmentRating?: string;
+  website?: string;
   labels: string[];
-  country: CountryInfo;
+  environmentDetails?: environmentDetails;
+  contact?: string[];
+  brokerLicenses: string[];
+  about?: About;
   markets: Market[]; // empty array in sample; change to specific type if you know the shape
-  basicInfo: BasicInfo | null;
   spreads: SpreadInfo[] | null;
-  mtServers: MtServer[] | null;
+  mtServers: MtServer | null;
   licenses: LicenseInfo[] | null;
   environment: Environment | null;
   transactionData: TransactionData | null;
@@ -21,108 +27,135 @@ export interface Broker {
   companies: CompanyEntry[] | null;
 }
 
+export interface environmentDetails {
+  grade?: string;
+  avgTransactionSpeed?: string;
+  speedLabel?: string;
+  mt4License?: string;
+  mt4Server?: string;
+  capital?: string;
+  influenceGrade?: string;
+  influenceScore?: string;
+  influenceCountry?: string;
+}
+
+export interface About {
+  brokerInformation?: string[];
+  companyName?: string[];
+  abbreviation?: string[];
+  regulatoryStatus?: string[];
+  companyWebsite?: string[];
+  nbp?: string[];
+  timeOfFirstCollection?: string[];
+  phoneOfTheCompany?: string[];
+  x?: string[];
+  facebook?: string[];
+  instagram?: string[];
+  youtube?: string[];
+  companyAddress?: string[];
+  linkedin?: string[];
+  whatsapp?: string[];
+  qq?: string[];
+  wechat?: string[];
+  customerServiceEmailAddress?: string[];
+  registeredRegion?: string[];
+  operatingPeriod?: string[];
+  contactNumber?: string[];
+}
+
 export interface Market {
   id: string;
   name: string;
 }
 
-export interface CountryInfo {
-  years: string; // "15-20 years"
-}
-
-/* Basic info placeholder (fields in your sample are keys, but values are generic placeholders) */
-export interface BasicInfo {
-  registeredRegion: string | null;
-  operatingPeriod: string | null;
-  companyName: string | null;
-  contactNumber: string | null;
-  companyWebsite: string | null;
-  Facebook: string | null;
-}
-
 /* Spread rows */
 export interface SpreadInfo {
-  _id: string;
-  tradingPair: string;
-  buy: string; // numeric-like but represented as string in sample
-  account: string;
-  spread: string;
-  avgSpreadDay: string;
-  longSwap: string;
-  shortSwap: string;
+  id: number;
+  broker_id?: number;
+  tradingPair?: string;
+  buy?: string;
+  account?: string;
+  spread?: string;
+  avgSpreadDay?: string;
+  longSwap?: string;
+  shortSwap?: string;
 }
 
 /* MT/platform info */
 export interface MtServer {
-  id: string
-  platform: string
-  serverName: string
-  country: string
-  leverageList: string
-  // leverageTable: {},
-  serverIp: string
-  ping: string
-  company: string
-  logo: string
-  rating: string
+  id: number;
+  broker_id: number;
+
+  executionSpeed: string;
+
+  licenses: string[]; // JSON array of strings
+
+  servers: Array<{
+    platform: string;
+    brokerName: string;
+    country: string;
+    ping: string;
+    leverage: string;
+    serverIps: Array<{
+      ip: string;
+      ping: string;
+      pingStatus: string;
+      country: string;
+      flag: string;
+    }>;
+  }>;
+
+  countryRegion: Array<{
+    country: string;
+    flag: string;
+    firstValue: string;
+    secondValue: string;
+  }>;
 }
 
 /* Regulator / license entries */
 export interface LicenseInfo {
-  _id: string;
-  flag: string;
-  regulator: string;
-  status: string;
-  country: string;
-  licenseType: string;
+  id: number;
+  broker_id?: number;
+  flag?: string;
+  regulator?: string;
+  status?: string;
+  country?: string;
+  licenseType?: string;
 }
 
-/* Environment / performance cards */
-export interface Environment {
+interface Environment {
+  id: number;
+  broker_id?: number;
   tabs: string[];
-  speed: SpeedEntry[];
-  cost: CostEntry[];
-  overnight: OvernightEntry[];
-  slippage: SlippageEntry[];
-  offline: OfflineEntry[];
-  summary: EnvironmentSummary;
-  dataSource: string;
-  updatedAt: string; // timestamp string "YYYY-MM-DD HH:mm:ss"
-}
-
-export interface SpeedEntry {
-  label: string;
-  value: string; // e.g. "717.8"
-  rating: string | null; // e.g. "Poor"
-}
-
-export interface CostEntry {
-  value: string; // e.g. "13.66USD/Lot"
-  rating: string | null; // e.g. "Average"
-}
-
-export interface OvernightEntry {
-  value: string; // e.g. "Long: -2.73USD/Lot"
-  rating: string | null;
-}
-
-export interface SlippageEntry {
-  label: string;
-  value: string; // e.g. "-0.2"
-  rating: string | null;
-}
-
-export interface OfflineEntry {
-  label: string;
-  value: string; // e.g. "0.2"
-  rating: string | null; // can be null
-}
-
-export interface EnvironmentSummary {
-  ranking: string; // e.g. "12 / 125"
-  testUsers: string; // e.g. "1,189"
-  orders: string; // e.g. "3,111"
-  margin: string; // e.g. "$4,077,649 USD"
+  speed: {
+    label?: string;
+    value?: string;
+    rating?: string;
+  }[];
+  cost: Record<string, unknown>; // from statsValidator
+  overnight: Record<string, unknown>; // from statsValidator
+  slippage: Record<string, unknown>; // from extendedStatsValidator
+  offline: Record<string, unknown>; // from extendedStatsValidator
+  ranking: string[];
+  summary: {
+    ranking?: string; // e.g. "12 / 125"
+    testUsers?: string; // e.g. "1,189"
+    orders?: string; // e.g. "3,111"
+    margin?: string;
+  };
+  chart?: {
+    [key: string]: {
+      labels?: string[];
+      datasets?: {
+        name?: string;
+        data?: number[];
+        [key: string]: unknown; // allow additional props
+      }[];
+    };
+  };
+  dataSource?: string;
+  updatedAt?: string;
 }
 
 /* Transaction-related data */
@@ -164,19 +197,31 @@ export interface MarketingItem {
 
 /* Business area entries */
 export interface BizAreaEntry {
-  _id: string;
-  country: string;
-  code: string;
-  value: number;
-  flag: string;
+  id: number;
+  broker_id?: number;
+  name: string;
+  ranking: {
+    country?: string;
+    code?: string;
+    value?: number;
+    flag?: string;
+  }[];
+  chart: {
+    labels?: string[];
+    datasets?: {
+      [key: string]: unknown; // datasetSchema not fully defined here
+    }[];
+  };
 }
 
 /* Clone firms (possible scams / clones) */
 export interface CloneFirm {
-  name: string;
-  link: string;
-  logo: string;
-  score: number;
+  id: number;
+  broker_id?: number;
+  name?: string;
+  link?: string;
+  logo?: string;
+  score?: number;
   tags: string[];
 }
 

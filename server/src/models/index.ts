@@ -11,26 +11,26 @@ import MT from "./mtServer.model";
 import Spreads from "./spread.model";
 
 export const dbInit = async () => {
-  Broker.hasMany(BizArea, { foreignKey: "broker" });
-  BizArea.belongsTo(Broker, { foreignKey: "broker" });
+  Broker.hasMany(BizArea, { foreignKey: "broker_id" });
+  BizArea.belongsTo(Broker, { foreignKey: "broker_id" });
 
-  Broker.hasMany(CloneFirm, { foreignKey: "broker" });
-  CloneFirm.belongsTo(Broker, { foreignKey: "broker" });
+  Broker.hasMany(CloneFirm, { foreignKey: "broker_id" });
+  CloneFirm.belongsTo(Broker, { foreignKey: "broker_id" });
 
-  Broker.hasOne(Environment, { foreignKey: "broker" });
-  Environment.belongsTo(Broker, { foreignKey: "broker" });
+  Broker.hasOne(Environment, { foreignKey: "broker_id" });
+  Environment.belongsTo(Broker, { foreignKey: "broker_id" });
 
-  Broker.hasMany(License, { foreignKey: "broker" });
-  License.belongsTo(Broker, { foreignKey: "broker" });
+  Broker.hasMany(License, { foreignKey: "broker_id" });
+  License.belongsTo(Broker, { foreignKey: "broker_id" });
 
-  Broker.hasMany(Market, { foreignKey: "broker" });
-  Market.belongsTo(Broker, { foreignKey: "broker" });
+  Broker.hasMany(Market, { foreignKey: "broker_id" });
+  Market.belongsTo(Broker, { foreignKey: "broker_id" });
+  
+  Broker.hasOne(MT, { foreignKey: "broker_id" });
+  MT.belongsTo(Broker, { foreignKey: "broker_id" });
 
-  Broker.hasOne(MT, { foreignKey: "broker" });
-  MT.belongsTo(Broker, { foreignKey: "broker" });
-
-  Broker.hasMany(Spreads, { foreignKey: "broker" });
-  Spreads.belongsTo(Broker, { foreignKey: "broker" });
+  Broker.hasMany(Spreads, { foreignKey: "broker_id" });
+  Spreads.belongsTo(Broker, { foreignKey: "broker_id" });
 
   await sequelize.sync({ alter: true }); // auto-create/update tables
 };

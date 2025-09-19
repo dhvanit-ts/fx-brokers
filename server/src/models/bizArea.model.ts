@@ -19,11 +19,11 @@ const BizArea = sequelize.define("biz_area", {
     autoIncrement: true,
     primaryKey: true,
   },
-  broker: {
-    type: DataTypes.NUMBER,
+  broker_id: {
+    type: DataTypes.INTEGER,
   },
   name: { type: DataTypes.STRING, allowNull: false },
-  ranking: {
+  rankings: {
     type: DataTypes.JSON,
     allowNull: false,
     validate: {

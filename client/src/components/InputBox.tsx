@@ -14,6 +14,7 @@ function InputBox({
       type="text"
       value={value ?? ""}
       onChange={(e) => setValue(e.target.value)}
+      className="hover:border-zinc-400 rounded-md px-1 transition-all border-transparent border-[1.5px]"
       {...props}
     />
   );

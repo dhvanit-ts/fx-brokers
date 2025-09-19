@@ -23,7 +23,7 @@ const verifyUserJWT = async (
     const decodedToken = jwt.verify(
       token,
       env.ACCESS_TOKEN_SECRET
-    ) as JwtPayload;
+    )
 
     if (!decodedToken || typeof decodedToken == "string") {
       throw new ApiError(401, "Invalid Access Token", "UNAUTHORIZED");
@@ -31,7 +31,7 @@ const verifyUserJWT = async (
 
     const user = await User.findByPk(decodedToken.id, {
       attributes: {
-        exclude: ["password", "refreshToken"],
+        exclude: ["password"],
       },
     });
 
@@ -39,7 +39,7 @@ const verifyUserJWT = async (
       throw new ApiError(401, "Invalid Access Token", "UNAUTHORIZED");
     }
 
-    if (!user.refreshToken) {
+    if (!user.dataValues.refreshToken) {
       throw new ApiError(
         401,
         "Refresh token session is not valid",

@@ -82,11 +82,11 @@ class UserService {
       if (!user) throw new ApiError(404, "User not found");
 
       const accessToken = this.generateAccessToken(
-        user.id,
-        user.username,
+        user.dataValues.id,
+        user.dataValues.username,
         isAdmin
       );
-      const refreshToken = this.generateRefreshToken(user.id, user.username);
+      const refreshToken = this.generateRefreshToken(user.dataValues.id, user.username);
 
       const refreshTokenUpdate = {
         refreshToken: refreshToken,
