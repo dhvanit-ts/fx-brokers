@@ -116,4 +116,4 @@ export const bulkInsertBrokers = async (brokers: any[]) => {
   }
 };
 
-bulkInsertBrokers(brokers as any[]);
+// bulkInsertBrokers(brokers as any[]);

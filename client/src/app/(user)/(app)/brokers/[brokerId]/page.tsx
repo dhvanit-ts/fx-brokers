@@ -3,77 +3,81 @@
 import React, { useEffect, useState } from "react";
 import { Broker } from "@/types/brokers";
 import { useParams } from "next/navigation";
-import {
-  FiGlobe,
-  FiPhone,
-  FiBookOpen,
-  FiDollarSign,
-  FiShield,
-  FiTrendingUp,
-  FiLayers,
-  FiServer,
-  FiInfo,
-  FiActivity,
-} from "react-icons/fi";
-import { FaInstagram, FaLinkedin } from "react-icons/fa";
-import Image from "next/image";
-import fallbackImage from "@/constants/fallbackImage";
 import fetcher from "@/utils/fetcher";
-
-// Collapsible Section Component
-const Section: React.FC<{
-  title: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}> = ({ title, icon, children }) => {
-  const [open, setOpen] = useState(true);
-
-  return (
-    <div className="bg-white shadow-md rounded-xl overflow-hidden border border-gray-100">
-      {/* Section Header */}
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-3 px-5 py-4 text-lg font-semibold bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 transition-all"
-      >
-        <span className="text-blue-600 text-xl">{icon}</span>
-        <span>{title}</span>
-        <span className="ml-auto text-gray-500 font-bold text-xl">
-          {open ? "−" : "+"}
-        </span>
-      </button>
-
-      {/* Section Content */}
-      <div
-        className={`transition-all duration-300 ease-in-out ${
-          open ? "max-h-[4000px] opacity-100" : "max-h-0 opacity-0"
-        } overflow-hidden`}
-      >
-        <div className="p-5">{children}</div>
-      </div>
-    </div>
-  );
-};
+import About from "@/components/broker/About";
+import Header from "@/components/broker/Header";
+import EnvironmentInfo from "@/components/broker/EnvironmentInfo";
+import BasicInfo from "@/components/broker/BasicInfo";
+import Licenses from "@/components/broker/Licenses";
+import Markets from "@/components/broker/Markets";
+import EnvironmentDetails from "@/components/broker/EnvironmentDetails";
+import MetaServers from "@/components/broker/MetaServers";
+import MtInfoCards from "@/components/broker/MtInfoCards";
+import Spreads from "@/components/broker/Spreads";
+import Environment from "@/components/broker/Environment";
+import BizArea from "@/components/broker/BizArea";
+import Clones from "@/components/broker/Clones";
+import Companies from "@/components/broker/Companies";
 
 const BrokerPage = () => {
   const [broker, setBroker] = useState<Broker | null>(null);
   const { brokerId } = useParams<{ brokerId: string }>();
+  // Add these at the beginning of the component
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // Update the useEffect
   useEffect(() => {
     (async () => {
       if (!brokerId) return;
 
       try {
+        setIsLoading(true);
         const data = await fetcher.get<{ data: Broker }>({
-          endpointPath: "/brokers/get/one/1",
+          endpointPath: `/brokers/get/one/${brokerId}`,
           statusShouldBe: 200,
-          onError: () => {},
+          onError: (err?: Error) =>
+            setError(err?.message || "Failed to load broker data"),
         });
         if (data) setBroker(data.data);
-      } catch (error) {
-        console.log(error);
+      } catch {
+        setError("Failed to load broker data");
+      } finally {
+        setIsLoading(false);
       }
     })();
   }, [brokerId]);
+
+  // Add loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading broker details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Add error state
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center p-8 bg-white rounded-xl shadow-lg">
+          <div className="text-red-500 text-5xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Error</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (!broker) {
     return (
@@ -82,406 +86,49 @@ const BrokerPage = () => {
   }
 
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-8 bg-gray-50">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row items-center gap-6 bg-white shadow-lg rounded-xl p-6 border border-gray-100">
-        <Image
-          src={broker.image || fallbackImage}
-          alt={broker.name || "Logo"}
-          width={96}
-          height={96}
-          className="w-24 h-24 rounded-xl border shadow-sm object-contain bg-gray-50"
-        />
-        <div className="text-center md:text-left">
-          <h1 className="text-3xl font-bold text-gray-800">{broker.name}</h1>
-          <a
-            href={broker.website}
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-2 text-blue-600 hover:underline justify-center md:justify-start mt-1"
-          >
-            <FiGlobe /> Visit Website
-          </a>
-          <p className="text-sm text-gray-600 mt-2">
-            <span className="text-lg">⭐</span>{" "}
-            <span className="font-semibold text-lg text-yellow-600">
-              {broker.score}
-            </span>{" "}
-            · {broker.years} experience
-          </p>
-          <div className="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
-            {broker.labels?.map((label, idx) => (
-              <span
-                key={idx}
-                className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full shadow-sm font-medium"
-              >
-                {label}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
+      <Header broker={broker} />
 
       {/* Basic Info */}
-      {broker && (
-        <Section title="Basic Info" icon={<FiBookOpen />}>
-          <div className="grid md:grid-cols-2 gap-4 text-gray-700">
-            <p>
-              <strong>Company:</strong> {broker.name}
-            </p>
-            <p>
-              <strong>Region:</strong> {broker.country}
-            </p>
-            <p>
-              <FiPhone className="inline mr-1 text-gray-500" />{" "}
-              {broker.contact?.[0] || "N/A"}
-            </p>
-            <p>
-              <FiGlobe className="inline mr-1 text-gray-500" />{" "}
-              {broker.website || "N/A"}
-            </p>
-          </div>
-        </Section>
+      {broker && <BasicInfo broker={broker} />}
+
+      {broker.environmentDetails && (
+        <EnvironmentInfo environmentDetails={broker.environmentDetails} />
       )}
 
       {/* Licenses */}
-      {broker.licenses && (
-        <Section title="Licenses & Regulation" icon={<FiShield />}>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {broker.licenses.map((l, idx) => (
-              <div
-                key={idx}
-                className="p-4 bg-white rounded-lg shadow border flex items-center gap-4 hover:shadow-md transition"
-              >
-                <Image
-                  height={32}
-                  width={32}
-                  src={l.flag || fallbackImage}
-                  alt={l.country || "Flag"}
-                  className="w-8 h-8 rounded-full border"
-                />
-                <div>
-                  <p className="font-semibold">{l.regulator}</p>
-                  <p className="text-sm text-gray-500">
-                    {l.country} · {l.licenseType}
-                  </p>
-                  <span
-                    className={`inline-block mt-1 px-2 py-1 text-xs rounded-full ${
-                      l.status === "Active"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
-                    }`}
-                  >
-                    {l.status}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Section>
-      )}
+      {broker.licenses && <Licenses licenses={broker.licenses} />}
 
       {/* Markets */}
       {broker.markets && broker.markets.length > 0 && (
-        <Section title="Markets" icon={<FiLayers />}>
-          <div className="flex flex-wrap gap-3">
-            {broker.markets.map((m, idx) => (
-              <span
-                key={idx}
-                className="px-4 py-2 bg-blue-50 text-blue-700 rounded-lg shadow-sm text-sm font-medium"
-              >
-                {m.name}
-              </span>
-            ))}
-          </div>
-        </Section>
+        <Markets markets={broker.markets} />
       )}
 
-      {broker.about && (
-        <Section title="About" icon={<FiInfo />}>
-          <div className="grid md:grid-cols-2 gap-6">
-            {broker.about.brokerInformation?.map((info, idx) => (
-              <p key={idx} className="text-gray-700">
-                {info}
-              </p>
-            ))}
+      {broker.about && <About about={broker.about} />}
 
-            {/* Social Media Links */}
-            <div className="flex gap-4 mt-4">
-              {broker.about.instagram && (
-                <a
-                  href={broker.about.instagram[0]}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-gray-600 hover:text-blue-600"
-                >
-                  <FaInstagram size={24} />
-                </a>
-              )}
-              {broker.about.linkedin && (
-                <a
-                  href={broker.about.linkedin[0]}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-gray-600 hover:text-blue-600"
-                >
-                  <FaLinkedin size={24} />
-                </a>
-              )}
-              {/* Add other social media icons */}
-            </div>
-          </div>
-        </Section>
-      )}
-
-      {broker.environmentDetails && (
-        <Section title="Environment Details" icon={<FiActivity />}>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="p-4 bg-white rounded-lg shadow">
-              <h3 className="font-semibold mb-2">Performance Grade</h3>
-              <p className="text-2xl font-bold text-blue-600">
-                {broker.environmentDetails.grade}
-              </p>
-              <p className="text-sm text-gray-500">
-                Avg Speed: {broker.environmentDetails.avgTransactionSpeed}
-              </p>
-            </div>
-            <div className="p-4 bg-white rounded-lg shadow">
-              <h3 className="font-semibold mb-2">Platform Details</h3>
-              <p>MT4 License: {broker.environmentDetails.mt4License}</p>
-              <p>Server: {broker.environmentDetails.mt4Server}</p>
-            </div>
-          </div>
-        </Section>
-      )}
+      {broker.environmentDetails && <EnvironmentDetails environmentDetails={broker.environmentDetails} />}
 
       {/* MT Info */}
-      {broker.mtServers && (
-        <div className="space-y-4">
-          <div className="flex flex-wrap gap-3 text-sm">
-            <span className="px-3 py-1 bg-gray-100 rounded">
-              MT4 Servers:{" "}
-              {broker.mtServers.servers.map((s) => s.platform === "MT4")
-                .length || "N/A"}
-            </span>
-            <span className="px-3 py-1 bg-gray-100 rounded">
-              MT5 Servers:{" "}
-              {broker.mtServers.servers.map((s) => s.platform === "MT5")
-                .length || "N/A"}
-            </span>
-            <span className="px-3 py-1 bg-gray-100 rounded">
-              Avg Execution Speed: {broker.mtServers.executionSpeed || "N/A"} ms
-            </span>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {broker.mtServers.servers.map((s, idx) => (
-              <div
-                key={idx}
-                className="p-4 border rounded-lg shadow bg-white flex items-center gap-3"
-              >
-                <div>
-                  <p className="font-semibold">{s.brokerName}</p>
-                  <p className="text-sm text-gray-500">
-                    Platform: {s.platform || "N/A"}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {broker.mtServers && <MetaServers mtServers={broker.mtServers} />}
 
       {/* MT Info Cards */}
-      {broker.mtServers && (
-        <Section title="MT Servers" icon={<FiServer />}>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {broker.mtServers.servers.map((card, idx) => (
-              <div
-                key={idx}
-                className="p-4 bg-white rounded-lg shadow border hover:shadow-md transition"
-              >
-                <p className="font-semibold">{card.platform}</p>
-                <p className="text-sm text-gray-500">{card.brokerName}</p>
-                <p className="text-sm">Country: {card.country}</p>
-                <p className="text-sm">Ping: {card.ping}</p>
-                <p className="text-sm">Leverage: {card.leverage}</p>
-                <p className="text-sm">Company: {card.platform}</p>
-              </div>
-            ))}
-          </div>
-        </Section>
-      )}
+      {broker.mtServers && <MtInfoCards mtServers={broker.mtServers} />}
 
-      {/* Spreads */}
-      {broker.spreads && (
-        <Section title="Spreads" icon={<FiDollarSign />}>
-          <div className="overflow-x-auto border rounded-lg shadow">
-            <table className="w-full text-sm border rounded-lg overflow-hidden">
-              <thead className="bg-gradient-to-r from-gray-100 to-gray-200">
-                <tr>
-                  {[
-                    "Trading Pair",
-                    "Buy",
-                    "Account",
-                    "Spread",
-                    "Avg Spread Day",
-                    "Long Swap",
-                    "Short Swap",
-                  ].map((head) => (
-                    <th
-                      key={head}
-                      className="border p-3 text-left font-semibold text-gray-700"
-                    >
-                      {head}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {broker.spreads.map((s, idx) => (
-                  <tr
-                    key={idx}
-                    className="hover:bg-blue-50 transition-colors odd:bg-white even:bg-gray-50"
-                  >
-                    <td className="border p-3">{s.tradingPair}</td>
-                    <td className="border p-3">{s.buy}</td>
-                    <td className="border p-3">{s.account}</td>
-                    <td className="border p-3">{s.spread}</td>
-                    <td className="border p-3">{s.avgSpreadDay}</td>
-                    <td className="border p-3">{s.longSwap}</td>
-                    <td className="border p-3">{s.shortSwap}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Section>
-      )}
+      {broker.spreads && <Spreads spreads={broker.spreads} />}
 
       {/* Environment */}
-      {broker.environment && (
-        <Section title="Trading Environment" icon={<FiTrendingUp />}>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white p-5 rounded-lg shadow">
-              <h3 className="text-lg font-semibold mb-2">
-                Performance Metrics
-              </h3>
-              <ul className="space-y-2 text-sm">
-                {broker.environment.speed.map((s, idx) => (
-                  <li key={idx} className="flex justify-between">
-                    <span>{s.label}</span>
-                    <span className="font-semibold">{s.value}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="bg-white p-5 rounded-lg shadow">
-              <h3 className="text-lg font-semibold mb-2">Summary</h3>
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="p-3 bg-gray-50 rounded">
-                  Ranking: {broker.environment.summary.ranking}
-                </div>
-                <div className="p-3 bg-gray-50 rounded">
-                  Orders: {broker.environment.summary.orders}
-                </div>
-                <div className="p-3 bg-gray-50 rounded">
-                  Margin: {broker.environment.summary.margin}
-                </div>
-                <div className="p-3 bg-gray-50 rounded">
-                  Users: {broker.environment.summary.testUsers}
-                </div>
-              </div>
-            </div>
-          </div>
-        </Section>
-      )}
+      {broker.environment && <Environment environment={broker.environment} />}
 
       {/* Business Area */}
-      {broker.bizArea && (
-        <Section title="Business Areas" icon={<FiGlobe />}>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {broker.bizArea.map((area, idx) =>
-              area.ranking.map((r, idx) => (
-                <div
-                  key={idx}
-                  className="p-4 bg-white rounded-lg shadow flex items-center gap-3"
-                >
-                  <Image
-                    width={24}
-                    height={24}
-                    src={r.flag || fallbackImage}
-                    alt={r.country || "Rankings"}
-                    className="w-6 h-6 rounded-full"
-                  />
-                  <span>
-                    {r.country} - <strong>{r.value}%</strong>
-                  </span>
-                </div>
-              ))
-            )}
-          </div>
-        </Section>
-      )}
+      {broker.bizArea && <BizArea bizArea={broker.bizArea} />}
 
       {/* Clones */}
-      {broker.clones && (
-        <Section title="Clone Firms (Warning)" icon={<FiShield />}>
-          <div className="grid md:grid-cols-2 gap-4">
-            {broker.clones.map((clone, idx) => (
-              <div
-                key={idx}
-                className="p-4 bg-red-50 flex space-x-4 border border-red-200 rounded-lg shadow"
-              >
-                <Image
-                  height={64}
-                  width={64}
-                  src={clone.logo || fallbackImage}
-                  alt={clone.name || "Clones"}
-                  className="h-16 mb-2"
-                />
-                <div>
-                  <p className="font-semibold text-red-700">{clone.name}</p>
-                  <p className="text-sm text-gray-600">Score: {clone.score}</p>
-                  <a
-                    href={clone.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-red-600 text-sm hover:underline"
-                  >
-                    View More
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Section>
-      )}
+      {broker.clones && <Clones clones={broker.clones} />}
 
       {/* Companies */}
       {broker.companies && (
-        <Section title="Companies" icon={<FiBookOpen />}>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {broker.companies.map((c, idx) => (
-              <div
-                key={idx}
-                className="p-4 bg-white rounded-lg shadow border hover:shadow-md transition"
-              >
-                <Image
-                  width={48}
-                  height={48}
-                  src={c.logoUrl}
-                  alt={c.companyName}
-                  className="w-12 h-12 mb-2"
-                />
-                <p className="font-semibold">{c.companyName}</p>
-                <p className="text-sm text-gray-500">{c.country}</p>
-                <p className="text-xs text-gray-400">
-                  Status: {c.status} · Reg#: {c.registrationNo}
-                </p>
-              </div>
-            ))}
-          </div>
-        </Section>
+        <Companies companies={broker.companies} />
       )}
     </div>
   );

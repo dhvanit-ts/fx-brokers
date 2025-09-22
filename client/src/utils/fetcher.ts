@@ -5,7 +5,7 @@ import { toast } from "sonner";
 interface GetType {
   endpointPath: string;
   statusShouldBe?: number;
-  onError?: () => void;
+  onError?: (err?: Error) => void;
 }
 
 interface GeneralMethodType extends GetType {

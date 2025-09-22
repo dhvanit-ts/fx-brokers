@@ -124,7 +124,7 @@ export interface LicenseInfo {
   licenseType?: string;
 }
 
-interface Environment {
+export interface Environment {
   id: number;
   broker_id?: number;
   tabs: string[];
