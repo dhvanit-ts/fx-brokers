@@ -16,7 +16,9 @@ export const bulkInsertBrokers = async (brokers: any[]) => {
     }
 
     // Collect broker objects first
-    const allBrokers: any[] = brokers.map((b) => b.broker).filter(Boolean);
+    const allBrokers: any[] = brokers
+      .map((b) => ({ ...b.broker, about: b.about }))
+      .filter(Boolean);
 
     // Insert brokers
     const brokerResults = await Broker.bulkCreate(allBrokers, {
@@ -114,4 +116,4 @@ export const bulkInsertBrokers = async (brokers: any[]) => {
   }
 };
 
-// bulkInsertBrokers(brokers as any[]);
+bulkInsertBrokers(brokers as any[]);

@@ -1,2 +1,2 @@
-const fallbackImage = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fcommons.wikimedia.org%2Fwiki%2FFile%3AImage-not-found.png&psig=AOvVaw2hI9mINHAd-lgX0sfJ-4A5&ust=1758352577133000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCLi4qvmj5I8DFQAAAAAdAAAAABAE"
+const fallbackImage = "https://www.svgrepo.com/show/508699/landscape-placeholder.svg"
 export default fallbackImage

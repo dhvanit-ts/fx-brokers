@@ -15,7 +15,7 @@ import {
   FiInfo,
   FiActivity,
 } from "react-icons/fi";
-import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaInstagram, FaLinkedin } from "react-icons/fa";
 import Image from "next/image";
 import fallbackImage from "@/constants/fallbackImage";
 import fetcher from "@/utils/fetcher";
