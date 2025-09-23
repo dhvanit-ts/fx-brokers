@@ -17,7 +17,7 @@ export interface Broker {
   about?: About;
   markets: Market[]; // empty array in sample; change to specific type if you know the shape
   spreads: SpreadInfo[] | null;
-  mtServers: MtServer | null;
+  meta_trader: MtServer | null;
   licenses: LicenseInfo[] | null;
   environment: Environment | null;
   transactionData: TransactionData | null;
@@ -96,7 +96,7 @@ export interface MtServer {
     country: string;
     ping: string;
     leverage: string;
-    serverIps: Array<{
+    serverIPs: Array<{
       ip: string;
       ping: string;
       pingStatus: string;

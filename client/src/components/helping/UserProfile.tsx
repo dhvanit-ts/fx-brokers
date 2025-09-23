@@ -1,10 +1,12 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import UserProfileStore from "@/store/userStore";
 import { User } from "@/types/users";
 import fetcher from "@/utils/fetcher";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { IoClose } from "react-icons/io5";
 
 function UserProfile() {
   const setUser = UserProfileStore((state) => state.setUser);
@@ -40,7 +42,7 @@ function UserProfile() {
 
   return (
     <AvatarWrapper>
-      <div className="bg-zinc-300 border hover:border-zinc-800 cursor-pointer transition-all h-10 w-10 rounded-full flex items-center justify-center">
+      <div className="bg-zinc-300 border hover:border-zinc-800 font-semibold cursor-pointer transition-all h-10 w-10 rounded-full flex items-center justify-center">
         {user?.username?.slice(0, 2).toUpperCase()}
       </div>
     </AvatarWrapper>
@@ -48,9 +50,24 @@ function UserProfile() {
 }
 
 const AvatarWrapper = ({ children }: { children: React.ReactNode }) => {
+  const [open, setOpen] = useState(false);
   return (
-    <div className="fixed w-full top-8 left-0 flex justify-end pr-8">
-      {children}
+    <div className="fixed w-full top-8 left-0 flex justify-end pr-8 z-50">
+      <div onClick={() => setOpen(!open)} className="relative">
+        <div
+          className={cn(
+            "transition-all absolute right-2 top-2 z-40 duration-200 ease-in-out rounded-3xl bg-zinc-700",
+            open ? "h-80 w-40" : "size-0 bg-zinc-200"
+          )}
+        ></div>
+        {open ? (
+          <div className="bg-zinc-300 absolute right-0 top-0 z-50 border hover:border-zinc-800 cursor-pointer transition-all h-8 w-8 text-base rounded-full flex items-center justify-center">
+            <IoClose />
+          </div>
+        ) : (
+          children
+        )}
+      </div>
     </div>
   );
 };

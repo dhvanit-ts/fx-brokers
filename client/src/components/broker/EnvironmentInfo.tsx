@@ -14,13 +14,13 @@ function Environment({
       <div className="flex flex-col md:flex-row gap-6">
         {/* Summary Cards */}
         <div className="flex flex-wrap gap-4 md:w-1/3">
-          <div className="bg-green-50 p-4 rounded-xl shadow flex flex-col items-center">
+          <div className="bg-green-50 p-4 rounded-xl shadow flex flex-col flex-grow items-center">
             <span className="text-gray-500 text-sm">Grade</span>
             <span className="text-2xl font-bold">
               {environmentDetails.grade}
             </span>
           </div>
-          <div className="bg-blue-50 p-4 rounded-xl shadow flex flex-col items-center">
+          <div className="bg-blue-50 p-4 rounded-xl shadow flex flex-col flex-grow items-center">
             <span className="text-gray-500 text-sm">Influence Score</span>
             <span className="text-2xl font-bold">
               {environmentDetails.influenceScore}
@@ -29,7 +29,7 @@ function Environment({
               {environmentDetails.influenceCountry}
             </span>
           </div>
-          <div className="bg-red-50 p-4 rounded-xl shadow flex flex-col items-center">
+          <div className="bg-red-50 p-4 rounded-xl shadow flex flex-col flex-grow items-center">
             <span className="text-gray-500 text-sm">Transaction Speed</span>
             <span className="text-2xl font-bold">
               {environmentDetails.avgTransactionSpeed}

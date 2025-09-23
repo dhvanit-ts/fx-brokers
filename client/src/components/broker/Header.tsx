@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   FiClock,
@@ -14,7 +14,7 @@ import Image from "next/image";
 import React from "react";
 import { ChartRadar } from "../charts/radar-chart";
 
-function Header({broker}: {broker: Broker}) {
+function Header({ broker }: { broker: Broker }) {
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
       <div className="flex flex-col lg:flex-row p-6 gap-8">
@@ -45,7 +45,7 @@ function Header({broker}: {broker: Broker}) {
               )}
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+            <div className="flex gap-8 text-sm">
               {broker.years && (
                 <div className="flex items-center gap-2 text-gray-600">
                   <FiClock className="w-4 h-4 text-gray-400" />
@@ -70,10 +70,10 @@ function Header({broker}: {broker: Broker}) {
           {/* Tags */}
           {broker.labels && broker.labels.length > 0 && (
             <div className="flex flex-wrap gap-2">
-              {broker.labels.map((label, idx) => (
+              {broker.labels.slice(0, 3).map((label, idx) => (
                 <span
                   key={idx}
-                  className="px-3 py-1 bg-gray-50 text-gray-600 rounded-md text-sm"
+                  className="px-3 py-1 bg-gray-100 text-gray-600 rounded-md text-sm"
                 >
                   {label}
                 </span>

@@ -12,12 +12,12 @@ import Licenses from "@/components/broker/Licenses";
 import Markets from "@/components/broker/Markets";
 import EnvironmentDetails from "@/components/broker/EnvironmentDetails";
 import MetaServers from "@/components/broker/MetaServers";
-import MtInfoCards from "@/components/broker/MtInfoCards";
 import Spreads from "@/components/broker/Spreads";
 import Environment from "@/components/broker/Environment";
 import BizArea from "@/components/broker/BizArea";
 import Clones from "@/components/broker/Clones";
 import Companies from "@/components/broker/Companies";
+import AdditionalInfo from "@/components/broker/AdditionalInfo";
 
 const BrokerPage = () => {
   const [broker, setBroker] = useState<Broker | null>(null);
@@ -110,10 +110,7 @@ const BrokerPage = () => {
       {broker.environmentDetails && <EnvironmentDetails environmentDetails={broker.environmentDetails} />}
 
       {/* MT Info */}
-      {broker.mtServers && <MetaServers mtServers={broker.mtServers} />}
-
-      {/* MT Info Cards */}
-      {broker.mtServers && <MtInfoCards mtServers={broker.mtServers} />}
+      {broker.meta_trader && <MetaServers mtServers={broker.meta_trader} />}
 
       {broker.spreads && <Spreads spreads={broker.spreads} />}
 
@@ -130,6 +127,8 @@ const BrokerPage = () => {
       {broker.companies && (
         <Companies companies={broker.companies} />
       )}
+
+      <AdditionalInfo broker={broker} />
     </div>
   );
 };
