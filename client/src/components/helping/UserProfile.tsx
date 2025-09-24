@@ -42,7 +42,7 @@ function UserProfile() {
 
   return (
     <AvatarWrapper>
-      <div className="bg-zinc-300 border hover:border-zinc-800 font-semibold cursor-pointer transition-all h-10 w-10 rounded-full flex items-center justify-center">
+      <div className="bg-zinc-300 border select-none hover:border-zinc-800 font-semibold cursor-pointer transition-all h-10 w-10 rounded-full flex items-center justify-center">
         {user?.username?.slice(0, 2).toUpperCase()}
       </div>
     </AvatarWrapper>
@@ -60,13 +60,15 @@ const AvatarWrapper = ({ children }: { children: React.ReactNode }) => {
             open ? "h-80 w-40" : "size-0 bg-zinc-200"
           )}
         ></div>
-        {open ? (
-          <div className="bg-zinc-300 absolute right-0 top-0 z-50 border hover:border-zinc-800 cursor-pointer transition-all h-8 w-8 text-base rounded-full flex items-center justify-center">
-            <IoClose />
-          </div>
-        ) : (
-          children
-        )}
+        <div className="bg-zinc-300 absolute right-0 top-0 rounded-full z-50 min-w-8 min-h-8">
+          {open ? (
+            <div className="bg-zinc-300 z-50 border hover:border-zinc-800 cursor-pointer transition-all h-8 w-8 text-base rounded-full flex items-center justify-center">
+              <IoClose />
+            </div>
+          ) : (
+            children
+          )}
+        </div>
       </div>
     </div>
   );

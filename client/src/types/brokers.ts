@@ -124,6 +124,11 @@ export interface LicenseInfo {
   licenseType?: string;
 }
 
+export interface Stats {
+  label: string;
+  value: string;
+}
+
 export interface Environment {
   id: number;
   broker_id?: number;
@@ -133,10 +138,10 @@ export interface Environment {
     value?: string;
     rating?: string;
   }[];
-  cost: Record<string, unknown>; // from statsValidator
-  overnight: Record<string, unknown>; // from statsValidator
-  slippage: Record<string, unknown>; // from extendedStatsValidator
-  offline: Record<string, unknown>; // from extendedStatsValidator
+  cost: Stats[]; // from statsValidator
+  overnight: Stats[]; // from statsValidator
+  slippage: Stats[]; // from extendedStatsValidator
+  offline: Stats[]; // from extendedStatsValidator
   ranking: string[];
   summary: {
     ranking?: string; // e.g. "12 / 125"
@@ -144,12 +149,12 @@ export interface Environment {
     orders?: string; // e.g. "3,111"
     margin?: string;
   };
-  chart?: {
+  charts?: {
     [key: string]: {
-      labels?: string[];
-      datasets?: {
-        name?: string;
-        data?: number[];
+      labels: string[];
+      datasets: {
+        name: string;
+        data: number[];
         [key: string]: unknown; // allow additional props
       }[];
     };

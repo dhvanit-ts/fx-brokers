@@ -7,7 +7,7 @@ const statsObj = S.object({
   rating: S.string(),
 });
 
-const statsValidator = createJsonValidator(S.array(statsObj).build());
+const statsValidator = createJsonValidator(S.array().of(statsObj).build());
 
 // extend schema
 const extendedStatsValidator = createJsonValidator(
@@ -95,7 +95,7 @@ const Environment = sequelize.define("environment", {
       ),
     },
   },
-  chart: {
+  charts: {
     type: DataTypes.JSON,
     validate: {
       schema: createJsonValidator(
